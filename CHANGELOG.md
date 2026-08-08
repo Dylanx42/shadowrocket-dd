@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 - 2026-08-08
+
+- `🔍 Google` 默认改为跟随 `🤖 AI固定美国节点`。
+- 目的：Gemini iOS App 除了 Gemini 专属域名外还会访问通用 Google API，统一出口可减少同一会话跨多个代理 IP 的情况。
+- 保留 `🚀 主节点`、`🇺🇸 美国自动` 等为 Google 的手工备选策略。
+
 ## 0.2.0 - 2026-08-08
 
 - 正式绑定 Shadowrocket 订阅显示名称：`白月光`、`BoostNet`。
