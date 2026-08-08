@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.3.0 - 2026-08-08
+
+- 按“敏感服务固定 IP、普通服务双机场自动”的长期使用逻辑重新整理策略。
+- `🤖 AI服务` 继续默认使用 `🤖 AI固定美国节点`，用于 OpenAI、Claude、Gemini、Copilot、Grok/xAI 等账号/地区敏感服务。
+- Google 搜索与普通 Google Web 流量恢复默认 `🚀 主节点` → `⚡ 双机场自动`。
+- 为保证 Gemini App 稳定，把 `accounts.google.com`、`myaccount.google.com`、`oauth2.googleapis.com` 和 `*.googleapis.com` 提前固定到 AI 美国出口。
+- `🎬 流媒体`、`📲 Telegram`、`🌐 社交网络`（含 TikTok）、`🐱 开发服务` 默认统一使用双机场自动。
+- Apple 官方/系统服务继续默认 `DIRECT`，不额外固定代理 IP。
+- `🛟 双机场容灾` 保留为白月光主、BoostNet 备的有序 fallback；`⚡ 双机场自动` 仍为日常默认。
+- 从普通策略组中移除 `PROXY`，避免“全局路由=配置”时首页手工选择的默认节点意外参与正常分流。
+
 ## 0.2.1 - 2026-08-08
 
 - `🔍 Google` 默认改为跟随 `🤖 AI固定美国节点`。
