@@ -5,6 +5,7 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 CONF = ROOT / "shadowrocket-dd.conf"
 WEATHERKIT_MODULE = ROOT / "modules" / "iRingo.WeatherKit.srmodule"
+MAPKIT_MODULE = ROOT / "modules" / "iRingo.MapKit.srmodule"
 
 text = CONF.read_text(encoding="utf-8")
 lines = text.splitlines()
@@ -113,6 +114,28 @@ else:
     if "🚀 主节点" not in groups:
         errors.append("WeatherKit module requires missing proxy group: 🚀 主节点")
 
+
+# Optional MapKit module must remain self-hosted and use the upstream Rewrite module's narrow MITM scope.
+if not MAPKIT_MODULE.exists():
+    errors.append("missing MapKit module: modules/iRingo.MapKit.srmodule")
+else:
+    module_text = MAPKIT_MODULE.read_text(encoding="utf-8")
+    required_module_strings = [
+        "#!url = https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/modules/iRingo.MapKit.srmodule",
+        "#!arguments = endpoint:mapkit.pages.dev",
+        "[Rule]",
+        "DOMAIN-SUFFIX,is.autonavi.com,DIRECT",
+        "[URL Rewrite]",
+        "https://{{{endpoint}}}/config/defaults",
+        "https://{{{endpoint}}}/config/announcements",
+        "https://{{{endpoint}}}/geo_manifest/dynamic/config",
+        "[MITM]",
+        "hostname = %APPEND% configuration.ls.apple.com, gspe35-ssl.ls.apple.com",
+    ]
+    for needle in required_module_strings:
+        if needle not in module_text:
+            errors.append(f"MapKit module missing required content: {needle}")
+
 if errors:
     print("Shadowrocket config validation FAILED:\n")
     for err in errors:
@@ -121,5 +144,5 @@ if errors:
 
 print(
     "Shadowrocket config validation PASS: "
-    f"{len(groups)} proxy groups, {len(rule_lines)} active rules, WeatherKit module OK"
+    f"{len(groups)} proxy groups, {len(rule_lines)} active rules, WeatherKit and MapKit modules OK"
 )
