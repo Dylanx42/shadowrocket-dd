@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 - 2026-08-14
+
+- 新增独立可选的 `modules/iRingo.MapKit.srmodule`，基于 `NSRingo/MapKit` Rewrite 版整理。
+- 保留中国地图日常使用，并启用国际版 3D 卫星地球、夜景及“四处看看”（Look Around）。
+- 模块更新地址改为本仓库；默认 `mapkit.pages.dev` 端点直连。
+- MapKit 不合并进主配置，只解密 `configuration.ls.apple.com` 与 `gspe35-ssl.ls.apple.com`。
+- 校验脚本增加 MapKit 模块结构、更新地址与 MITM 范围检查。
+
 ## 0.4.0 - 2026-08-13
 
 - 新增本仓库托管的 `modules/iRingo.WeatherKit.srmodule`，基于 `NSRingo/WeatherKit` v3.2.1。
