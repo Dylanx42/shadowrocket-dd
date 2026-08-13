@@ -23,7 +23,8 @@ shadowrocket-dd/
 ├── README.md
 ├── CHANGELOG.md
 ├── modules/
-│   ├── iRingo.WeatherKit.srmodule\n│   └── iRingo.MapKit.srmodule
+│   ├── iRingo.WeatherKit.srmodule
+│   └── iRingo.MapKit.srmodule
 ├── scripts/
 │   └── validate.py
 ├── .github/workflows/
@@ -116,4 +117,5 @@ update-url = https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/sha
 
 - 配置语法与策略组能力参考 `LOWERTOP/Shadowrocket`。
 - 服务分流规则主要来自 `blackmatrix7/ios_rule_script`。
-- Apple 天气增强逻辑来自 `NSRingo/WeatherKit`，保留原作者署名与上游地址。\n- Apple 地图增强逻辑来自 `NSRingo/MapKit`，保留原作者署名与上游地址。
+- Apple 天气增强逻辑来自 `NSRingo/WeatherKit`，保留原作者署名与上游地址。
+- Apple 地图增强逻辑来自 `NSRingo/MapKit`，保留原作者署名与上游地址。
