@@ -2,7 +2,10 @@
 from pathlib import Path
 import sys
 
-CONF = Path(__file__).resolve().parents[1] / "shadowrocket-dd.conf"
+ROOT = Path(__file__).resolve().parents[1]
+CONF = ROOT / "shadowrocket-dd.conf"
+WEATHERKIT_MODULE = ROOT / "modules" / "iRingo.WeatherKit.srmodule"
+
 text = CONF.read_text(encoding="utf-8")
 lines = text.splitlines()
 errors = []
@@ -85,10 +88,38 @@ expected_update = "update-url = https://raw.githubusercontent.com/Dylanx42/shado
 if expected_update not in text:
     errors.append("update-url does not point to the canonical main-branch config")
 
+# Optional WeatherKit module must remain self-hosted, narrowly scoped and compatible with the main policy names.
+if not WEATHERKIT_MODULE.exists():
+    errors.append("missing WeatherKit module: modules/iRingo.WeatherKit.srmodule")
+else:
+    module_text = WEATHERKIT_MODULE.read_text(encoding="utf-8")
+    required_module_strings = [
+        "#!url = https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/modules/iRingo.WeatherKit.srmodule",
+        "#!arguments = endpoint:weatherkit.pages.dev",
+        "[Rule]",
+        "DOMAIN,weatherkit.apple.com,🚀 主节点",
+        "DOMAIN,weatherkit.pages.dev,DIRECT",
+        "DOMAIN,weather.nanocat.cloud,🚀 主节点",
+        "[URL Rewrite]",
+        "https://{{{endpoint}}}/api/v1/availability/",
+        "https://{{{endpoint}}}/api/v2/weather/",
+        "[MITM]",
+        "hostname = %APPEND% weatherkit.apple.com",
+    ]
+    for needle in required_module_strings:
+        if needle not in module_text:
+            errors.append(f"WeatherKit module missing required content: {needle}")
+
+    if "🚀 主节点" not in groups:
+        errors.append("WeatherKit module requires missing proxy group: 🚀 主节点")
+
 if errors:
     print("Shadowrocket config validation FAILED:\n")
     for err in errors:
         print(f"- {err}")
     sys.exit(1)
 
-print(f"Shadowrocket config validation PASS: {len(groups)} proxy groups, {len(rule_lines)} active rules")
+print(
+    "Shadowrocket config validation PASS: "
+    f"{len(groups)} proxy groups, {len(rule_lines)} active rules, WeatherKit module OK"
+)
