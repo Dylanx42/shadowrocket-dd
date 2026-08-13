@@ -13,7 +13,7 @@
 - GitHub / GitLab / Atlassian、Google、流媒体、Telegram、社交网络分别分流。
 - Apple、Microsoft、国内网络默认直连。
 - 广告拦截可一键从 `REJECT` 切到 `DIRECT` 排障。
-- 主配置默认不启用 MITM；Apple 天气增强作为独立可选模块提供。
+- 主配置默认不启用 MITM；Apple 天气与地图增强均作为独立可选模块提供。
 
 ## 文件结构
 
@@ -23,7 +23,7 @@ shadowrocket-dd/
 ├── README.md
 ├── CHANGELOG.md
 ├── modules/
-│   └── iRingo.WeatherKit.srmodule
+│   ├── iRingo.WeatherKit.srmodule\n│   └── iRingo.MapKit.srmodule
 ├── scripts/
 │   └── validate.py
 ├── .github/workflows/
@@ -69,6 +69,20 @@ https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/modules/iRingo.W
 
 该模块源自 `NSRingo/WeatherKit`，当前按上游 v3.2.1 整理。WeatherKit 查询会交由所选 iRingo 重写端点处理，可能包含城市坐标和天气请求参数；不接受这一点时不要启用模块。关闭模块即可恢复原始 Apple 天气请求。
 
+## Apple 地图增强模块（可选）
+
+仓库内提供一份基于 iRingo MapKit Rewrite 版整理的模块，不修改主配置，也不改变现有导航分流。
+
+在 Shadowrocket 进入 `配置 → 模块 → 右上角 +`，添加：
+
+```text
+https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/modules/iRingo.MapKit.srmodule
+```
+
+启用前需完成上文相同的 Shadowrocket CA 安装与信任步骤。该模块只解密 `configuration.ls.apple.com` 和 `gspe35-ssl.ls.apple.com`，默认使用 `mapkit.pages.dev` 重写端点并保持地图相关数据源直连。
+
+默认效果是保留中国地图日常使用，同时增加国际版 3D 卫星地球、夜景和“四处看看”（Look Around）。启用后彻底关闭地图 App 再重新打开；选择卫星地图并缩小到最远，应能看到地球球体及 ` iRingo: 📍 GEOResourceManifest` 标识。iOS 26 起 Apple 已移除独立的 Flyover 入口，因此 iOS 27 主要验证 3D 卫星图和 Look Around。
+
 ## 为什么默认不是机场 fallback
 
 `⚡ 双机场自动` 会直接在两个机场全部有效节点中挑当前表现较好的节点，日常体验更接近 Mac 上的多 Provider 聚合。
@@ -86,7 +100,7 @@ https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/modules/iRingo.W
 - `custom-ai.list`：补充 AI 域名
 - `custom-reject.list`：自定义屏蔽
 
-每次 push / PR 会运行 `scripts/validate.py`，检查必要区段、重复策略组、规则引用、两个机场订阅筛选、公开仓库 `[Proxy]` 是否保持为空，以及 WeatherKit 模块的必要字段。
+每次 push / PR 会运行 `scripts/validate.py`，检查必要区段、重复策略组、规则引用、两个机场订阅筛选、公开仓库 `[Proxy]` 是否保持为空，以及 WeatherKit、MapKit 模块的必要字段与最小 MITM 范围。
 
 ## 在线更新
 
@@ -96,10 +110,10 @@ https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/modules/iRingo.W
 update-url = https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/shadowrocket-dd.conf
 ```
 
-以后 GitHub 上更新配置后，可以直接在 Shadowrocket 中检查更新，不需要重新维护一份本地配置。WeatherKit 模块也带有本仓库的 `#!url`，安装一次后继续从本仓库更新。
+以后 GitHub 上更新配置后，可以直接在 Shadowrocket 中检查更新，不需要重新维护一份本地配置。WeatherKit 与 MapKit 模块都带有本仓库的 `#!url`，安装一次后继续从本仓库更新。
 
 ## 上游
 
 - 配置语法与策略组能力参考 `LOWERTOP/Shadowrocket`。
 - 服务分流规则主要来自 `blackmatrix7/ios_rule_script`。
-- Apple 天气增强逻辑来自 `NSRingo/WeatherKit`，保留原作者署名与上游地址。
+- Apple 天气增强逻辑来自 `NSRingo/WeatherKit`，保留原作者署名与上游地址。\n- Apple 地图增强逻辑来自 `NSRingo/MapKit`，保留原作者署名与上游地址。
