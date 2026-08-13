@@ -1,0 +1,33 @@
+#!name = DD · iRingo MapKit
+#!desc = 适配 shadowrocket-dd 的 Apple 地图增强模块\n1.为中国版 Apple 地图添加国际版功能\n2.启用 3D 卫星图像与地球夜景\n3.启用四处看看（Look Around）
+#!url = https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/modules/iRingo.MapKit.srmodule
+#!author = VirgilClyne[https://github.com/VirgilClyne]
+#!homepage = https://github.com/Dylanx42/shadowrocket-dd
+#!icon = https://developer.apple.com/assets/elements/icons/maps/maps-128x128.png
+#!category = DD
+#!arguments = endpoint:mapkit.pages.dev
+#!arguments-desc = endpoint: [重写] 服务端点\n    ├ mapkit.pages.dev: 首选；直连；无需代理\n    ├ dev.mapkit.pages.dev: 开发版\n    └ mapkit.nanocat.cloud: Worker 版；需要代理
+
+# DD integration based on NSRingo/MapKit Rewrite module.
+# Upstream: https://github.com/NSRingo/MapKit
+
+[Rule]
+# 🗺️ Amap
+DOMAIN-SUFFIX,is.autonavi.com,DIRECT
+# 🗺️ Maps
+DOMAIN,gspe11-2-cn-ssl.ls.apple.com,DIRECT
+DOMAIN,gspe12-cn-ssl.ls.apple.com,DIRECT
+DOMAIN,gspe19-cn-ssl.ls.apple.com,DIRECT
+DOMAIN,gspe19-2-cn-ssl.ls.apple.com,DIRECT
+DOMAIN,gspe79-cn-ssl.ls.apple.com,DIRECT
+
+[URL Rewrite]
+# 🗺️ Network Defaults
+^https?:\/\/configuration\.ls\.apple\.com\/config\/defaults https://{{{endpoint}}}/config/defaults header
+# 🗺️ Announcements
+^https?:\/\/gspe35-ssl\.ls\.apple\.com\/config\/announcements https://{{{endpoint}}}/config/announcements header
+# 🗺️ Resource Manifest
+^https?:\/\/gspe35-ssl\.ls\.apple\.com\/geo_manifest\/dynamic\/config https://{{{endpoint}}}/geo_manifest/dynamic/config header
+
+[MITM]
+hostname = %APPEND% configuration.ls.apple.com, gspe35-ssl.ls.apple.com
