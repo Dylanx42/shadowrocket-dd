@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0 - 2026-08-13
+
+- 新增本仓库托管的 `modules/iRingo.WeatherKit.srmodule`，基于 `NSRingo/WeatherKit` v3.2.1。
+- 保留上游作者署名、功能参数和重写逻辑，模块更新地址改为 `Dylanx42/shadowrocket-dd`。
+- `weatherkit.apple.com` 接入现有 `🚀 主节点`；默认 `weatherkit.pages.dev` 端点直连，备用 `weather.nanocat.cloud` 走主代理。
+- WeatherKit 继续作为可选模块，不把 `[MITM]` 合并进主配置；只有启用模块的设备需要安装并信任 Shadowrocket CA。
+- 校验脚本增加 WeatherKit 模块结构、更新地址、策略引用和 MITM 范围检查。
+
 ## 0.3.0 - 2026-08-08
 
 - 按“敏感服务固定 IP、普通服务双机场自动”的长期使用逻辑重新整理策略。
