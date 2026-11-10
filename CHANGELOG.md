@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.6.0 - 2026-11-10
+
+- 为主配置增加独立 `🍏 Apple AI` 策略组，默认沿用现有美国固定 AI 出口，普通 `🍎 Apple` 继续默认直连。
+- 增加 `🍏 Apple Relay TCP` 手选策略组，两个 Apple Relay 域名和 Apple 官方 `cp4.cloudflare.com` 定向到该组；用户需手动选真正的美国 TCP 节点，不能靠节点名称自动判断传输协议。
+- Apple Intelligence Extensions 的 `apple-relay.apple.com`、Siri 的 `guzzoni.apple.com` 定向 `🍏 Apple AI`，保留 ChatGPT 的原有 `🤖 AI服务` 策略。
+- Apple AI 精确域名规则置于通用 Apple、广告与自定义规则前。普通 iCloud、App Store、Apple 系统更新、天气/地图可选模块不受此更改影响。
+- 不开启 MITM，未修改订阅凭证；增加配置检验与手机操作说明。原帖中的 TCP 解决方式是特定环境的经验，不是 Apple 对所有线路的硬性要求。
+
 ## 0.5.0 - 2026-08-14
 
 - 新增独立可选的 `modules/iRingo.MapKit.srmodule`，基于 `NSRingo/MapKit` Rewrite 版整理。

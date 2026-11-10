@@ -11,7 +11,7 @@
 - 香港 / 日本 / 新加坡 / 美国 / 台湾：跨两个机场按地区自动测速。
 - `🤖 AI固定美国节点`：手工固定一条美国节点，供 ChatGPT、Claude、Gemini、Copilot、Grok 等 AI 服务长期使用，避免频繁切公网 IP。
 - GitHub / GitLab / Atlassian、Google、流媒体、Telegram、社交网络分别分流。
-- Apple、Microsoft、国内网络默认直连。
+- Apple、Microsoft、国内网络默认直连；单独将 Apple Intelligence / Siri 相关请求交给 `🍏 Apple AI`，并提供手选 TCP 的 `🍏 Apple Relay TCP`。
 - 广告拦截可一键从 `REJECT` 切到 `DIRECT` 排障。
 - 主配置默认不启用 MITM；Apple 天气与地图增强均作为独立可选模块提供。
 
@@ -48,7 +48,22 @@ https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/shadowrocket-dd.
 3. Shadowrocket 全局路由选择“配置”。
 4. `🚀 主节点` 默认使用 `⚡ 双机场自动`，日常无需手工切换。
 5. 打开 `🤖 AI固定美国节点`，手工选择一条长期稳定的美国节点；AI 流量默认跟随它。
-6. 如果某 App 出现异常，先把 `🛡 广告拦截` 从 `REJECT` 切为 `DIRECT` 判断是否是广告规则误伤。
+6. 若使用 Apple Intelligence，在 `🍏 Apple Relay TCP` 里手工选一条**美国 TCP 传输节点（不能是 HY2/TUIC 等 UDP 传输）**，两条 Apple Relay 和 cp4 将使用该节点；默认引用的 AI 固定美国组不保证 TCP。
+7. 如果某 App 出现异常，先把 `🛡 广告拦截` 从 `REJECT` 切为 `DIRECT` 判断是否是广告规则误伤。
+
+## Apple Intelligence / Siri / ChatGPT 分流（iOS 27.3 Beta 场景）
+
+本配置仅设置网络分流，**不修改或解锁设备地区/硬件能力**；国行 Apple Intelligence 的激活与兼容性不作保证。修改系统设备信息（例如 GestaltX）存在风险，请自行备份并评估。
+
+- `🍏 Apple AI`：默认跟随 `🤖 AI固定美国节点`，处理 `apple-relay.apple.com`（Apple Intelligence Extensions）和 `guzzoni.apple.com`（Siri）。
+- `🍏 Apple Relay TCP`：独立手选美国 **TCP 传输**节点，处理 `apple-relay.cloudflare.com`、`apple-relay.fastly-edge.com`、`cp4.cloudflare.com`（Private Cloud Compute）。**必须手选**：节点名称无法可靠判断传输是 TCP 还是 HY2/UDP；组初始引用 AI 固定美国出口仅为可用性兜底，并不保证 TCP。
+- `🤖 AI服务`：OpenAI/ChatGPT 相关 API 继续使用原有固定美国组；`🍎 Apple`：普通苹果业务保持 `DIRECT`。不为 Apple AI 开启 MITM / HTTPS 解密。
+- `*.smoot.apple.com` 同时涉及 Spotlight、Safari、Music 等搜索服务，不整体代理；`gateway.icloud.com` 等共用 iCloud 域名也不作整体代理，避免改变普通 Apple 流量。
+- Apple 官方列出的 PCC 域名支持 443/TCP 与 443/UDP；“Relay 必须走 TCP”是原帖用户在特定节点/系统环境的排障结论，并非 Apple 官方普遍要求。
+
+**手机操作：** Shadowrocket 更新配置 → 全局路由为“配置” → 打开 `🍏 Apple Relay TCP` → 手动选白月光/BoostNet 的稳定美国 TCP 节点（例如节点实际传输为 Trojan/TCP 等；不要仅凭名称） → 重新连接 → 用 Siri 触发 ChatGPT 并查看小火箭连接日志。Siri ChatGPT 登录如果依旧出现回跳失败，可按原帖先临时使用稳定的 TCP 全局模式登录，完成后恢复配置模式。
+
+Apple 官方网络端点参考：https://support.apple.com/en-us/101555
 
 ## Apple 天气增强模块（可选）
 

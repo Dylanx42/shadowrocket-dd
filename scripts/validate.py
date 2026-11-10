@@ -51,6 +51,8 @@ required_groups = {
     "🚀 主节点",
     "🤖 AI固定美国节点",
     "🤖 AI服务",
+    "🍏 Apple AI",
+    "🍏 Apple Relay TCP",
     "🛡 广告拦截",
     "🔒 国内网络",
     "🐟 漏网之鱼",
@@ -83,6 +85,23 @@ for lineno, s in rule_lines:
 
     if policy not in builtins and policy not in groups:
         errors.append(f"unknown policy '{policy}' referenced at line {lineno}")
+
+# Dedicated Apple Intelligence rules should precede broad Apple and other rule sets.
+required_apple_ai_rules = [
+    "DOMAIN,apple-relay.cloudflare.com,🍏 Apple Relay TCP,force-remote-dns",
+    "DOMAIN,apple-relay.fastly-edge.com,🍏 Apple Relay TCP,force-remote-dns",
+    "DOMAIN,cp4.cloudflare.com,🍏 Apple Relay TCP,force-remote-dns",
+    "DOMAIN,apple-relay.apple.com,🍏 Apple AI,force-remote-dns",
+    "DOMAIN,guzzoni.apple.com,🍏 Apple AI,force-remote-dns",
+]
+apple_generic = "RULE-SET,https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Shadowrocket/Apple/Apple.list,🍎 Apple"
+for needle in required_apple_ai_rules:
+    if needle not in text:
+        errors.append(f"missing Apple Intelligence rule: {needle}")
+    elif apple_generic not in text or text.index(needle) > text.index(apple_generic):
+        errors.append(f"Apple Intelligence rule must precede generic Apple rules: {needle}")
+if "🍏 Apple Relay TCP = select,🤖 AI固定美国节点,白月光,BoostNet,use=true" not in text:
+    errors.append("Apple Relay TCP group must expose both subscription node sets for manual TCP choice")
 
 # Maintenance contract.
 expected_update = "update-url = https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/shadowrocket-dd.conf"
