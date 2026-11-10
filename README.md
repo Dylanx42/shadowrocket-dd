@@ -11,7 +11,7 @@
 - 香港 / 日本 / 新加坡 / 美国 / 台湾：跨两个机场按地区自动测速。
 - `🤖 AI固定美国节点`：手工固定一条美国节点，供 ChatGPT、Claude、Gemini、Copilot、Grok 等 AI 服务长期使用，避免频繁切公网 IP。
 - GitHub / GitLab / Atlassian、Google、流媒体、Telegram、社交网络分别分流。
-- Apple、Microsoft、国内网络默认直连；单独将 Apple Intelligence / Siri 相关请求交给 `🍏 Apple AI`，并提供手选 TCP 的 `🍏 Apple Relay TCP`。
+- Apple、Microsoft、国内网络通常默认直连；Apple Intelligence / Siri 有 `🍏 Apple AI` 和 `🍏 Apple Relay TCP`；对社区报告的 ChatGPT 扩展地区限制，另设可一键回退的 `🍏 ChatGPT解锁兼容`（仅一组指定的 Apple 共用域名，默认走固定美国出口）。
 - 广告拦截可一键从 `REJECT` 切到 `DIRECT` 排障。
 - 主配置默认不启用 MITM；Apple 天气与地图增强均作为独立可选模块提供。
 
@@ -58,10 +58,12 @@ https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/shadowrocket-dd.
 - `🍏 Apple AI`：默认跟随 `🤖 AI固定美国节点`，处理 `apple-relay.apple.com`（Apple Intelligence Extensions）和 `guzzoni.apple.com`（Siri）。
 - `🍏 Apple Relay TCP`：独立手选美国 **TCP 传输**节点，处理 `apple-relay.cloudflare.com`、`apple-relay.fastly-edge.com`、`cp4.cloudflare.com`（Private Cloud Compute）。**必须手选**：节点名称无法可靠判断传输是 TCP 还是 HY2/UDP；组初始引用 AI 固定美国出口仅为可用性兜底，并不保证 TCP。
 - `🤖 AI服务`：OpenAI/ChatGPT 相关 API 继续使用原有固定美国组；`🍎 Apple`：普通苹果业务保持 `DIRECT`。不为 Apple AI 开启 MITM / HTTPS 解密。
-- `*.smoot.apple.com` 同时涉及 Spotlight、Safari、Music 等搜索服务，不整体代理；`gateway.icloud.com` 等共用 iCloud 域名也不作整体代理，避免改变普通 Apple 流量。
+- `🍏 ChatGPT解锁兼容`（v0.7.0）：按 2026-11-11 GitHub 社区用户报告新增对 `itunes.apple.com`、`smp-device-content.apple.com`、`xp.apple.com`、`mesu.apple.com`、`smoot.apple.com`、部分 `icloud.com`、`icloud-content.com` 和定位相关精确主机的路由。默认经 `🍏 Apple AI` 固定美国出口，出现 iCloud/App Store/地图/系统更新异常时，将该策略组设为 `DIRECT` 可一键回退（不影响原有 Siri/PCC 和 ChatGPT API）。
+- `DOMAIN, guzzoni.apple.com` 已在基础 Apple AI 规则中；`chatgpt.com`、`openai.com` 明确交给 `🤖 AI服务`。出于最小误匹配原则，不加入社区截图里的 `DOMAIN-KEYWORD,siri` 通配匹配。
+- **重要风险**：上述兼容域名不是苹果官方声明的“ChatGPT 专属域名”，部分承载 App Store、Siri 搜索、iCloud 与系统更新。代理可能影响国区 iCloud 的同步、地图和系统服务。地区不可用提示也可能来自 Apple Account 地区及设备服务端资格，**网络规则不保证解除限制**。
 - Apple 官方列出的 PCC 域名支持 443/TCP 与 443/UDP；“Relay 必须走 TCP”是原帖用户在特定节点/系统环境的排障结论，并非 Apple 官方普遍要求。
 
-**手机操作：** Shadowrocket 更新配置 → 全局路由为“配置” → 打开 `🍏 Apple Relay TCP` → 手动选白月光/BoostNet 的稳定美国 TCP 节点（例如节点实际传输为 Trojan/TCP 等；不要仅凭名称） → 重新连接 → 用 Siri 触发 ChatGPT 并查看小火箭连接日志。Siri ChatGPT 登录如果依旧出现回跳失败，可按原帖先临时使用稳定的 TCP 全局模式登录，完成后恢复配置模式。
+**手机操作：** Shadowrocket 更新配置 → 全局路由为“配置” → 确认 `🍏 ChatGPT解锁兼容` = `🍏 Apple AI`（如果系统业务异常，切 `DIRECT`） → 打开 `🍏 Apple Relay TCP` → 手动选白月光/BoostNet 的稳定美国 TCP 节点（例如节点实际传输为 Trojan/TCP 等；不要仅凭名称） → 重新连接 → 用 Siri 触发 ChatGPT 并查看小火箭连接日志。Siri ChatGPT 登录如果依旧出现回跳失败，可按原帖先临时使用稳定的 TCP 全局模式登录，完成后恢复配置模式。
 
 Apple 官方网络端点参考：https://support.apple.com/en-us/101555
 

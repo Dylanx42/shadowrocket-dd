@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.7.0 - 2026-11-11
+
+- 根据 GestaltX GitHub 社区用户贴出的 Apple ChatGPT 扩展“此地区不可用”分流清单补充小火箭规则。
+- 新增独立 `🍏 ChatGPT解锁兼容` 策略组，默认跟随固定美国 `🍏 Apple AI`，允许一键切 `DIRECT` 恢复受影响的共用 Apple 域名流量。
+- 新增 12 个 Apple 系统 / iCloud / Siri 搜索 / App Store 的域名匹配（包括 `smoot.apple.com`、`gateway.icloud.com`），以及 `chatgpt.com` / `openai.com` 的明确 AI 规则；保留已有 `guzzoni.apple.com` 和 Apple Relay TCP 策略。
+- 不照搬过宽的 `DOMAIN-KEYWORD,siri`；不改订阅、不启用 MITM；说明共用域名分流可能干扰国区 iCloud、App Store、定位、系统更新，且无法保证绕过账号或设备的服务端资格限制。
+
 ## 0.6.0 - 2026-11-10
 
 - 为主配置增加独立 `🍏 Apple AI` 策略组，默认沿用现有美国固定 AI 出口，普通 `🍎 Apple` 继续默认直连。

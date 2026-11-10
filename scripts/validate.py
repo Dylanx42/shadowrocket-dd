@@ -53,6 +53,7 @@ required_groups = {
     "🤖 AI服务",
     "🍏 Apple AI",
     "🍏 Apple Relay TCP",
+    "🍏 ChatGPT解锁兼容",
     "🛡 广告拦截",
     "🔒 国内网络",
     "🐟 漏网之鱼",
@@ -102,6 +103,36 @@ for needle in required_apple_ai_rules:
         errors.append(f"Apple Intelligence rule must precede generic Apple rules: {needle}")
 if "🍏 Apple Relay TCP = select,🤖 AI固定美国节点,白月光,BoostNet,use=true" not in text:
     errors.append("Apple Relay TCP group must expose both subscription node sets for manual TCP choice")
+
+# Community workaround stays scoped and can be disabled in one policy group.
+compat_group = "🍏 ChatGPT解锁兼容 = select,🍏 Apple AI,🤖 AI固定美国节点,🇺🇸 美国自动,DIRECT,policy-select-name=🍏 Apple AI"
+if compat_group not in text:
+    errors.append("missing reversible Apple ChatGPT compatibility group")
+compat_matches = [
+    "DOMAIN-SUFFIX,itunes.apple.com",
+    "DOMAIN-SUFFIX,smp-device-content.apple.com",
+    "DOMAIN-SUFFIX,xp.apple.com",
+    "DOMAIN-SUFFIX,mesu.apple.com",
+    "DOMAIN-SUFFIX,smoot.apple.com",
+    "DOMAIN,gateway.icloud.com",
+    "DOMAIN,gs-loc-cn.apple.com",
+    "DOMAIN,gspe1-ssl.ls.apple.com",
+    "DOMAIN,p150-acsegateway.icloud.com",
+    "DOMAIN,setup.icloud.com",
+    "DOMAIN,bag.itunes.apple.com",
+    "DOMAIN-SUFFIX,icloud-content.com",
+]
+for entry in compat_matches:
+    expected = f"{entry},🍏 ChatGPT解锁兼容,force-remote-dns"
+    if expected not in text:
+        errors.append(f"missing Apple ChatGPT compatibility rule: {expected}")
+    elif apple_generic not in text or text.index(expected) > text.index(apple_generic):
+        errors.append(f"Apple compatibility rule must precede generic Apple: {expected}")
+for suffix in ("chatgpt.com", "openai.com"):
+    if f"DOMAIN-SUFFIX,{suffix},🤖 AI服务,force-remote-dns" not in text:
+        errors.append(f"missing explicit AI routing for {suffix}")
+if "DOMAIN-KEYWORD,siri,🍏 ChatGPT解锁兼容" in text:
+    errors.append("over-broad Siri keyword should not be enabled")
 
 # Maintenance contract.
 expected_update = "update-url = https://raw.githubusercontent.com/Dylanx42/shadowrocket-dd/main/shadowrocket-dd.conf"
